@@ -1,0 +1,12 @@
+TCP:
+iperf -c $IP -t 30
+-t 设置传输的总时间。Iperf在指定的时间内，重复的发送指定长度的数据包。默认是10秒钟。参考-l与-n选项
+
+1.FDB插入操作 
+把新的端口插入fdb中时，我看到list.example中 每次把自定义结构体的一部分加入到链表当。
+list_add_tail(&entry->list,&mac_port_map.hash_table[0]); 
+
+
+2.使用reference在s1中的端口号是1,2   我的打印的不一样这有关系吗？
+
+3.gdb调试 segmentfault
