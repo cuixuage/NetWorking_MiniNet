@@ -10,3 +10,16 @@ list_add_tail(&entry->list,&mac_port_map.hash_table[0]);
 2.使用reference在s1中的端口号是1,2   我的打印的不一样这有关系吗？
 
 3.gdb调试 segmentfault
+ ulimit -c unlimited
+gdb 可执行程序名称 core
+
+
+**************************************************************************
+
+和路由器区别？
+
+1.交换机更像一个内部网络的controller 记录每一个主机的MAC + interface作为通信的fdb表
+*************************************特别注意 interface，entry 是实际物理接口   
+**********而非: 程序的socket 的端口port
+
+2.路由器 更像一个内部网络的网关?  一个公网IP + 为内部网路每一个主机分配的IP  
