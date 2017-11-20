@@ -1,0 +1,42 @@
+目的:
+局域网 万维网之间的互访  == 私有地址 公用地址之间的数据交换
+
+NAT 映射关系:
+(Internal_IP + InternalPort , assignedPORT)
+路由器会为每一个tcp/ip 连接分配一个assignedPORT
+
+NAT地址转换:
+1.DIR_IN 外网访问内网
+desIP desPORT需要转换为内部主机真正的internal_IP internal_port
+2.DIR_OUT 内网访问外网
+srcIP srcPORT 转换为 路由器本身的external_iface->ip + assignedPORT
+
+注:
+1.区分packet方向: 
+IP_hdr->desIP == nat.external_iface->ip 是DIR_IN ;packet的目的地址是NAT本身公网地址
+else DIR_OUT
+2.DIR_OUT方向首次连接
+DIR_IN && get_mapping_entry==NULL 是需要NAT分配PORT
+并将此映射关系 insert_nat_mapping_entry
+3.IP TCP校验和
+更改了协议的headr 重新计算checksum否则packet会被丢弃 先计算IP_checksum再计算TCP_checksum
+4.老化操作
+只实现timeout则删除映射;FIN==1结束连接则删除映射关系尚未实现
+
+实现函数:
+struct nat_mapping *nat_lookup_external(struct list_head *mapping_list, u16 external_port);
+struct nat_mapping *nat_lookup_internal(struct list_head *mapping_list,u32 internal_ip, u16 internal_port);
+u16 assign_external_port();
+void free_port(u16 port);
+struct nat_mapping *nat_insert_mapping(struct list_head *mapping_list, u32 internal_ip, u16 internal_port);
+static int get_packet_direction(char *packet);
+void nat_update_tcp_connection(char *packet, struct nat_mapping *mapping, int dir);
+struct nat_mapping *nat_get_mapping_from_packet(char *packet, int len, iface_info_t *iface, int dir);
+void do_translation(iface_info_t *iface, char *packet, int len, int dir)
+void *nat_timeout();
+
+
+实验结果:
+h2启动simpleHTTPServer ;h1 wget h2_IP 
+获取到当前目录所有文件并写入到index.html
+
