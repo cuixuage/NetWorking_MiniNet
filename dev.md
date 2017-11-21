@@ -1,2 +1,5 @@
-master fot test 
-and for merge conflict
+<<<<<<< HEAD
+dev for branch
+=======
+dev for branch
+>>>>>>> dev
