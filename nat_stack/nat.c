@@ -10,8 +10,8 @@
 #include <string.h>
 #include <unistd.h>
 #include <signal.h>
-// mapping_entry 所有结构体IP + PORT全部按照网络字节序存储
-// 这样只需要在printf时 进行转换即可
+// mapping_entry 所有结构体IP + PORT全部按照网络字节序存储 这样只需要在printf时 进行转换即可
+// 注:网络packet中的整型变量保存早本机应该是需要全部转化为主机字节序的
 // #include <sys/socket.h>
 // #include <netinet/in.h>   //为了使用inet_addr(char *)函数 以网络字节序保存long  
 // #include <arpa/inet.h>
