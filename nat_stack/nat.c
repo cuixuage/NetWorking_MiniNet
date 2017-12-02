@@ -10,8 +10,8 @@
 #include <string.h>
 #include <unistd.h>
 #include <signal.h>
-// mapping_entry 所有结构体IP + PORT全部按照网络字节序存储
-// 这样只需要在printf时 进行转换即可
+// mapping_entry 所有结构体IP + PORT全部按照网络字节序存储 这样只需要在printf时 进行转换即可
+// 注:网络packet中的整型变量保存早本机应该是需要全部转化为主机字节序的
 // #include <sys/socket.h>
 // #include <netinet/in.h>   //为了使用inet_addr(char *)函数 以网络字节序保存long  
 // #include <arpa/inet.h>
@@ -229,7 +229,8 @@ void do_translation(iface_info_t *iface, char *packet, int len, int dir)
 #endif		
 	}
 	else{								//更换源地址+源port    //加入新的映射关系 nat_insert_mapping
-										//这里我向table[0]中插入了
+										//这里我向table[0]中插入了；应该是要寻找到 srcport所在链表的位置 
+										//通过srcIP的hash函数的序号  而不是单纯的序号0
 		if(mapping_entry == NULL) {
 			mapping_entry = nat_insert_mapping(&nat.nat_mapping_list[0],srcip,srcport);
 			printf("insert mapping ok,srcip=%s,sport=%u,assigned=%u\n",myip,ntohs(srcport),ntohs(mapping_entry->external_port));
@@ -357,3 +358,13 @@ void nat_table_destroy()
 
 	pthread_mutex_unlock(&nat.lock);
 }
+
+
+
+/*
+nat_mapping_list (保存不同主机的IP)  struct nat_mapping里面的list是指同一IP的不同port的映射 
+理解:
+hash(IP1)->port1->port2->port3......
+hash(IP2)->port1......
+hash(IP3)
+*/
